@@ -1,0 +1,5 @@
+1. Install Python 3.10
+2. Pastikan memiliki PyCharm Community Edition
+3. Buka cmd di folder project
+4. Jalankan: pip install -r requirements.txt
+5. Kemudian jalankan: python app.py

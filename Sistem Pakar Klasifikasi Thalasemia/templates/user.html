@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+  <style>
+    .card {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+  </style>
+</head>
+<body style="background-image: url('{{ url_for('static', filename='images/bg.png') }}'); background-attachment: fixed; background-size: cover; background-size: 100% 100%;">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" style="position: relative; z-index: 1;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#" style="font-family: 'Lilita One', sans-serif; font-weight: 400; font-style: normal; color: #8B0000">Sistem Pakar Klasifikasi Thalasemia</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-nav ml-auto">
+        <a class="nav-item btn btn-primary" style="background-color: #8B0000; border-color: #8B0000; border-radius: 20px;" href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="display: flex;">
+    <div class="card active" id="card1" style="width: 22rem; border-radius: 2px; border-width: 0px; margin-bottom: 20px; border-radius: 5px; border-color: #8B0000; box-shadow: 0 3px 20px rgba(148, 9, 9, 0.2); position: relative; padding: 20px; margin:auto; margin-top: 30px; display: flex; flex-direction: column;">
+      <div class="card-body">
+        <h5 class="card-title">Data Pasien</h5>
+        <form id="form1">
+          <div class="mb-3">
+            <label for="nama" class="form-label">Nama</label>
+            <input type="text" class="form-control" id="nama" name="nama" required>
+          </div>
+          <div class="mb-3">
+            <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
+            <select class="form-control" id="jenis_kelamin" name="jenis_kelamin" required>
+              <option value="L">Laki-Laki</option>
+              <option value="P">Perempuan</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="usia" class="form-label">Usia</label>
+            <input type="text" class="form-control" id="usia" name="usia" required>
+          </div>
+          <button id="nextButton" type="button" class="btn btn-primary" style="background-color: #8B0000; border-color: #8B0000;">Next</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" id="card2" style="width: 66rem; border-radius: 2px; border-width: 0px; margin-bottom: 20px; border-radius: 5px; border-color: #8B0000; box-shadow: 0 3px 20px rgba(148, 9, 9, 0.2); position: relative; padding: 20px; margin:auto; margin-top: 30px; display: none; flex-direction: column;">
+      <div class="card-body">
+        <h5 class="card-title">Diagnosa Gejala</h5>
+        <form id="form2">
+          {% for gejala_item in gejala %}
+          <div class="mb-3">
+            <label id="diagnosa{{ loop.index }}" class="form-label">{{ gejala_item['pertanyaan_gejala'] }}</label>
+            <input name="gejala{{loop.index}}" value="{{gejala_item['Id_gejala']}}" hidden>
+            <div class="dropdown">
+              <select name="bobot{{ loop.index }}" id="bobot{{ loop.index }}">
+                {% for bobot_item in bobot %}
+                <option value="{{ bobot_item['nilai_bobot'] }}">{{ bobot_item['keterangan'] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          {% endfor %}
+          <button id="submitButton1" type="button" class="btn btn-primary" style="background-color: #8B0000; border-color: #8B0000;">CBR</button>
+          <button id="submitButton2" type="button" class="btn btn-primary" style="background-color: #8B0000; border-color: #8B0000;">RBR</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          const nextButton = document.getElementById('nextButton');
+          const submitButton1 = document.getElementById('submitButton1');
+          const submitButton2 = document.getElementById('submitButton2');
+          const card1 = document.getElementById('card1');
+          const card2 = document.getElementById('card2');
+
+          nextButton.addEventListener('click', function(event) {
+              event.preventDefault();
+              card1.style.display = 'none';
+              card2.style.display = 'flex';
+          });
+
+          submitButton1.addEventListener('click', function() {
+              submitForm('{{ url_for('route_cbr') }}');
+          });
+
+          submitButton2.addEventListener('click', function() {
+              submitForm('{{ url_for('route_rbr') }}');
+          });
+
+          function submitForm(actionUrl) {
+              const form1 = document.getElementById('form1');
+              const form2 = document.getElementById('form2');
+              const formData = new FormData();
+
+              // Append data from form1
+              for (let element of form1.elements) {
+                  if (element.name) {
+                      formData.append(element.name, element.value);
+                  }
+              }
+
+              // Append data from form2
+              for (let element of form2.elements) {
+                  if (element.name) {
+                      formData.append(element.name, element.value);
+                  }
+              }
+
+              fetch(actionUrl, {
+                  method: 'POST',
+                  body: formData
+              })
+              .then(response => {
+                  if (response.ok) {
+                      // Handle response jika diperlukan
+                      window.location.href = response.url;
+                      console.log('Request successful');
+                  } else {
+                      console.error('Error:', response.statusText);
+                  }
+              })
+              .catch((error) => {
+                  console.error('Error:', error);
+              });
+          }
+      });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

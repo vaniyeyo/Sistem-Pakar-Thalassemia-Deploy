@@ -1,0 +1,40 @@
+.box {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex: 1; /* Memberi fleksibilitas yang sama untuk kotak 1 dan kotak 2 */
+  border: 1px solid #ccc; /* Tambahkan border */
+  margin-right: 5px; /* Tambahkan jarak antara kotak-kotak */
+  margin-bottom: 5px;
+}
+
+.box-header {
+  background-color: #ccc;
+  border-bottom: 1px solid #999;
+  padding: 5px 10px;
+  border-radius: 5px 5px 0 0;
+}
+
+.box-header p {
+  margin: 0;
+  padding: 0; /* Hilangkan padding bawaan */
+  padding-bottom: -20px; /* Tambahkan padding negatif ke bawah */
+}
+
+.box-content {
+  padding: 10px;
+  height: auto;
+}
+
+.row {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  
+  [class^="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  
